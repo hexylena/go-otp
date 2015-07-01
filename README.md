@@ -14,6 +14,7 @@ command line, which will let me add the accounts to whatever MFA devices I want.
 - I'm still learning this language, the code is probably rubbish
 - Yes, the database password is taken in plaintext from the CLI, that could
   probably be improved a LOT
+- No HOTP support
 
 # Installation
 
