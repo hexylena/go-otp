@@ -41,11 +41,11 @@ func ExportAction() error {
 	defer rows.Close()
 
 	for rows.Next() {
-        var (
-            account string
-            issuer string
-            password string
-        )
+		var (
+			account  string
+			issuer   string
+			password string
+		)
 		rows.Scan(&account, &issuer, &password)
 		fmt.Printf("%s\t%s\t%s\n", account, issuer, password)
 	}

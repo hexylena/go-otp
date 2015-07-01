@@ -34,9 +34,9 @@ func InitAction() error {
 	}
 
 	c := "CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY KEY, `account` char, `issuer` char, `password` chart);"
-    //account
-    //issuer
-    //password
+	//account
+	//issuer
+	//password
 	_, err = db.Exec(c)
 	if err != nil {
 		return err

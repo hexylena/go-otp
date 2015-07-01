@@ -13,11 +13,11 @@ Register a new TOTP/HOTP Private key
 `
 
 var (
-    addAccountFlag   string
+	addAccountFlag   string
 	addIssuerFlag    string
 	addSecretKeyFlag string
 	addPasswordFlag  string
-    addUpdate        bool
+	addUpdate        bool
 )
 
 func AddAction() error {
@@ -37,30 +37,30 @@ func AddAction() error {
 		return err
 	}
 
-    if addUpdate {
-        d := fmt.Sprintf(
-            "UPDATE `users` SET password = '%s' WHERE issuer = '%s' AND account = '%s';",
-            addSecretKeyFlag,
-            addIssuerFlag,
-            addAccountFlag,
-        )
-        _, err = db.Exec(d)
-        if err != nil {
-            return err
-        }
-    } else {
+	if addUpdate {
+		d := fmt.Sprintf(
+			"UPDATE `users` SET password = '%s' WHERE issuer = '%s' AND account = '%s';",
+			addSecretKeyFlag,
+			addIssuerFlag,
+			addAccountFlag,
+		)
+		_, err = db.Exec(d)
+		if err != nil {
+			return err
+		}
+	} else {
 
-        d := fmt.Sprintf(
-            "INSERT INTO `users` (issuer, account, password) values('%s', '%s', '%s');",
-            addIssuerFlag,
-            addAccountFlag,
-            addSecretKeyFlag,
-        )
-        _, err = db.Exec(d)
-        if err != nil {
-            return err
-        }
-    }
+		d := fmt.Sprintf(
+			"INSERT INTO `users` (issuer, account, password) values('%s', '%s', '%s');",
+			addIssuerFlag,
+			addAccountFlag,
+			addSecretKeyFlag,
+		)
+		_, err = db.Exec(d)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

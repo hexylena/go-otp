@@ -17,7 +17,7 @@ Generate a TOTP/HOTP Code for the given --service
 
 var (
 	getAccountFlag  string
-    getIssuerFlag   string
+	getIssuerFlag   string
 	getPasswordFlag string
 )
 
@@ -64,10 +64,10 @@ func GetAction() error {
 	}
 
 	e := fmt.Sprintf(
-        "select password from users where account = '%s' AND issuer = '%s';",
-        getAccountFlag,
-        getIssuerFlag,
-    )
+		"select password from users where account = '%s' AND issuer = '%s';",
+		getAccountFlag,
+		getIssuerFlag,
+	)
 	rows, err := db.Query(e)
 	if err != nil {
 		return err

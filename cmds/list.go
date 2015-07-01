@@ -40,15 +40,15 @@ func ListAction() error {
 	}
 	defer rows.Close()
 
-    fmt.Printf("Services: Issuer : Account\n\n")
+	fmt.Printf("Services: Issuer : Account\n\n")
 
 	for rows.Next() {
-        var (
-            account string
-            issuer string
-        )
+		var (
+			account string
+			issuer  string
+		)
 		rows.Scan(&account, &issuer)
-        fmt.Printf("\t%s : %s\n", issuer, account)
+		fmt.Printf("\t%s : %s\n", issuer, account)
 	}
 	rows.Close()
 
