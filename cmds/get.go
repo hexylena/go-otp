@@ -16,7 +16,8 @@ Generate a TOTP/HOTP Code for the given --service
 `
 
 var (
-	getServiceFlag  string
+	getAccountFlag  string
+    getIssuerFlag   string
 	getPasswordFlag string
 )
 
@@ -62,7 +63,11 @@ func GetAction() error {
 		return err
 	}
 
-	e := fmt.Sprintf("select password from users where name = '%s';", getServiceFlag)
+	e := fmt.Sprintf(
+        "select password from users where account = '%s' AND issuer = '%s';",
+        getAccountFlag,
+        getIssuerFlag,
+    )
 	rows, err := db.Query(e)
 	if err != nil {
 		return err
@@ -81,5 +86,7 @@ func GetAction() error {
 
 func GetFlagHandler(fs *flag.FlagSet) {
 	fs.StringVar(&getPasswordFlag, "password", "", "Database Password")
-	fs.StringVar(&getServiceFlag, "service", "", "Service to generate code for")
+
+	fs.StringVar(&getAccountFlag, "account", "", "Account Name")
+	fs.StringVar(&getIssuerFlag, "issuer", "", "Issuer Name")
 }

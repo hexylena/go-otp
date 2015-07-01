@@ -33,7 +33,10 @@ func InitAction() error {
 		return err
 	}
 
-	c := "CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY KEY, `name` char, `password` chart, UNIQUE(`name`));"
+	c := "CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY KEY, `account` char, `issuer` char, `password` chart);"
+    //account
+    //issuer
+    //password
 	_, err = db.Exec(c)
 	if err != nil {
 		return err

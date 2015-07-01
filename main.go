@@ -39,6 +39,16 @@ func main() {
     getCmd.Documentation = cmds.GetDoc
     bin.RegisterCommand(getCmd)
 
+    qrCmd := comandante.NewCommand("qr", "qr PNG QR Code", cmds.QrAction)
+    qrCmd.FlagInit = cmds.QrFlagHandler // use the flag package to qr a url
+    qrCmd.Documentation = cmds.QrDoc
+    bin.RegisterCommand(qrCmd)
+
+    exportCmd := comandante.NewCommand("export", "export database to json", cmds.ExportAction)
+    exportCmd.FlagInit = cmds.ExportFlagHandler
+    exportCmd.Documentation = cmds.ExportDoc
+    bin.RegisterCommand(exportCmd)
+
     // run the command
     if err := bin.Run(); err != nil {
         fmt.Fprintln(os.Stderr, err)
