@@ -11,3 +11,4 @@ Session.vim
 
 
 #!! ERROR: golang is undefined. Use list command to see defined gitignore types !!#
+*.png
