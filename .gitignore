@@ -1,0 +1,13 @@
+auth.db
+# Created by https://www.gitignore.io
+
+### Vim ###
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+
+#!! ERROR: golang is undefined. Use list command to see defined gitignore types !!#
