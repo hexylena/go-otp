@@ -55,6 +55,17 @@ $ go-otp gen -password $password -service MyServiceName
 [Valid for 30s] 222222
 ```
 
+## List Registered Services
+
+```console
+$ go-otp list -password $password
+Services:
+
+    DigitalOcean
+    GitHub
+    ...
+```
+
 # LICENSE
 
 OATH-TOTP storage and password generator
