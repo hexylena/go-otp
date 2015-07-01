@@ -3,7 +3,7 @@ package main
 import (
     "fmt"
     "github.com/robmerrell/comandante"
-    "github.com/erasche/totp/cmds"
+    "github.com/erasche/go-otp/cmds"
     "bufio"
     "os"
 )
