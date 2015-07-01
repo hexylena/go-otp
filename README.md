@@ -51,19 +51,19 @@ $ go-otp init -password your_space_free_password
 ## Register New Services
 
 ```console
-$ go-otp add -password $password -secretKey 20CHARSTRING -service MyServiceName
+$ go-otp add -password $password -secretKey LONGSECRETKEY -account alice@local.host -issuer AWS
 ```
 
 ## Overwrite Existing Service Entries
 
 ```console
-$ go-otp add -password $password -secretKey NEWSERVICEKEY -service MyServiceName -update
+$ go-otp add -password $password -secretKey LONGSECRETKEY -account alice@local.host -issuer AWS -update
 ```
 
 ## Generate Codes
 
 ```console
-$ go-otp gen -password $password -service MyServiceName
+$ go-otp gen -password $password -account alice@local.host -issuer AWS
 [Valid for 16s] 123456
 [Valid for 30s] 111111
 [Valid for 30s] 222222
@@ -75,9 +75,21 @@ $ go-otp gen -password $password -service MyServiceName
 $ go-otp list -password $password
 Services:
 
-    DigitalOcean
-    GitHub
+    AWS : alice@local.host
+    AWS : jane@university.edu
+    DigitalOcean : alice@gmail.com
+    GitHub : alice@gmail.com
     ...
+```
+
+## Generate QR Codes
+
+```console
+$ go-otp qr -password $password
+QR Code stored to AWS__alice@local.host.png
+QR Code stored to AWS__jane@university.edu.png
+QR Code stored to DigitalOcean__alice@gmail.com.png
+QR Code stored to GitHub__alice@gmail.com.png
 ```
 
 # LICENSE

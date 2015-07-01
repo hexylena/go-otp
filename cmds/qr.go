@@ -45,8 +45,6 @@ func QrAction() error {
 	}
 	defer rows.Close()
 
-	fmt.Printf("Services:\n\n")
-
 	for rows.Next() {
         var (
             account string
