@@ -2,12 +2,25 @@
 
 - Store TOTP account credentials in an sqlcipher'd database
 - Generate TOTP Codes
+- Generate QR Codes to add your accounts to multiple devices
 
 This was born from an awful experience with *Google Authenticator* where I
 realised I could not export or backup my codes. Not wanting to move from F/OSS
 GA to the closed source Authy app, I wrote a simple piece of software to
 securely store my OATH-TOTP private keys, and generate codes on demand at the
-command line, which will let me add the accounts to whatever MFA devices I want.
+command line, which will let me add the accounts to whatever MFA devices I
+want, e.g. all of my handsets.
+
+&lt;rant&gt;
+Yes this goes against the whole point of "something you have", but "something
+you have" isn't very useful if you're overseas and someone's nicked your
+handheld device. If you still have, say, a tablet with you back in your
+hotel... then you're not permanently and irrevocably locked out of accounts
+that don't use a "backup code" method like Google, and you're not stuck with
+Google's arrogant assumption that "We use backup codes, so everyone does", or
+their other assumption that you'd move your Google Authenticator app across
+their servers, to another device with GAPPS
+&lt;/rant&gt;
 
 # N.B.
 
