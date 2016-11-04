@@ -33,7 +33,7 @@ func ListAction() error {
 		return err
 	}
 
-	e := "select account,issuer from users;"
+	e := "select account,issuer from users order by account asc, issuer asc;"
 	rows, err := db.Query(e)
 	if err != nil {
 		return err
@@ -42,13 +42,15 @@ func ListAction() error {
 
 	fmt.Printf("Services: Issuer : Account\n\n")
 
+	i := 0
 	for rows.Next() {
 		var (
 			account string
 			issuer  string
 		)
 		rows.Scan(&account, &issuer)
-		fmt.Printf("\t%s : %s\n", issuer, account)
+		fmt.Printf("\t[%d] %s : %s\n", i, issuer, account)
+		i += 1
 	}
 	rows.Close()
 

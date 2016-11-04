@@ -12,44 +12,30 @@ import (
 )
 
 var GetDoc = `
-Generate a TOTP/HOTP Code for the given --service
+Generate a TOTP/HOTP Code for the given
 `
 
 var (
-	getAccountFlag  string
-	getIssuerFlag   string
+	getIndex        int
 	getPasswordFlag string
 )
 
-func genCode(key string) {
+func genCode(key, account, issuer string) {
 	key = strings.ToUpper(key)
 	totp := &otp.TOTP{Secret: key, IsBase32Secret: true}
 	token := totp.Get()
-	fmt.Printf("[Valid for %02ds] %s\n", (30 - time.Now().Unix()%30), token)
+	fmt.Printf("[%24s%16s] [Valid for %02ds] %s\n", account, issuer, (30 - time.Now().Unix()%30), token)
 }
 
-func yieldCode(key string) {
+func yieldCode(key, account, issuer string) {
 	//generate one code
-	genCode(key)
-	var next_30 int = 30 - int(time.Now().Unix()%30)
-	time.Sleep(time.Second * time.Duration(next_30))
-
-	for {
-		genCode(key)
-		var next_30 int = 30 - int(time.Now().Unix()%30)
-		time.Sleep(time.Second*time.Duration(next_30) + time.Millisecond*10)
-	}
-
+	genCode(key, account, issuer)
 }
 
 func GetAction() error {
 	if getPasswordFlag == "" {
 		return errors.New("Must provide -password")
 	}
-
-	//if getServiceFlag == "" {
-	//fmt.Printf("Provide -service to generate codes for only one service")
-	//}
 
 	db, err := sql.Open("sqlite3", "auth.db")
 	if err != nil {
@@ -64,9 +50,7 @@ func GetAction() error {
 	}
 
 	e := fmt.Sprintf(
-		"select password from users where account = '%s' AND issuer = '%s';",
-		getAccountFlag,
-		getIssuerFlag,
+		"select account,issuer,password from users order by account asc, issuer asc;",
 	)
 	rows, err := db.Query(e)
 	if err != nil {
@@ -75,9 +59,13 @@ func GetAction() error {
 	defer rows.Close()
 
 	for rows.Next() {
-		var pass string
-		rows.Scan(&pass)
-		yieldCode(pass)
+		var (
+			account string
+			issuer  string
+			pass    string
+		)
+		rows.Scan(&account, &issuer, &pass)
+        yieldCode(pass, account, issuer)
 	}
 	rows.Close()
 
@@ -86,7 +74,4 @@ func GetAction() error {
 
 func GetFlagHandler(fs *flag.FlagSet) {
 	fs.StringVar(&getPasswordFlag, "password", "", "Database Password")
-
-	fs.StringVar(&getAccountFlag, "account", "", "Account Name")
-	fs.StringVar(&getIssuerFlag, "issuer", "", "Issuer Name")
 }
