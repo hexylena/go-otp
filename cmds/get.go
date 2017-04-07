@@ -20,16 +20,13 @@ var (
 	getPasswordFlag string
 )
 
-func genCode(key, account, issuer string) {
+func genCode(key, account, issuer string) int {
 	key = strings.ToUpper(key)
 	totp := &otp.TOTP{Secret: key, IsBase32Secret: true}
 	token := totp.Get()
-	fmt.Printf("[%24s%16s] [Valid for %02ds] %s\n", account, issuer, (30 - time.Now().Unix()%30), token)
-}
-
-func yieldCode(key, account, issuer string) {
-	//generate one code
-	genCode(key, account, issuer)
+	data := fmt.Sprintf("[%24s][%24s] [Valid for %02ds] %s\n", account, issuer, (30 - time.Now().Unix()%30), token)
+	fmt.Print(data)
+	return len(data)
 }
 
 func GetAction() error {
@@ -65,7 +62,7 @@ func GetAction() error {
 			pass    string
 		)
 		rows.Scan(&account, &issuer, &pass)
-        yieldCode(pass, account, issuer)
+		genCode(pass, account, issuer)
 	}
 	rows.Close()
 
