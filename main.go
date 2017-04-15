@@ -10,6 +10,11 @@ import (
 	"path"
 )
 
+var (
+	version   string
+	builddate string
+)
+
 func promptForPasscode() string {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter Passcode: ")
@@ -21,6 +26,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "go-otp"
 	app.Usage = "Simple TOTP tool"
+	app.Version = fmt.Sprintf("%s (%s)", version, builddate)
 	user, err := user.Current()
 
 	var defaultDbPath string
@@ -31,8 +37,8 @@ func main() {
 	}
 
 	app.Flags = []cli.Flag{
-		cli.StringFlag{Name: "dbPath", Value: defaultDbPath},
-		cli.StringFlag{Name: "password"},
+		cli.StringFlag{Name: "dbPath", Value: defaultDbPath, EnvVar: "GOTP_DB_PATH"},
+		cli.StringFlag{Name: "password", EnvVar: "GOTP_DB_PASS"},
 	}
 
 	app.Commands = []cli.Command{

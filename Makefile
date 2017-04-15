@@ -22,6 +22,6 @@ release:
 	mkdir dist
 	CGO_ENABLED=0 gox \
 		-ldflags "-X main.version=$(VERSION) -X main.builddate=`date -u +%Y-%m-%dT%H:%M:%SZ`" \
-		-output "dist/$(TARGET)_{{.OS}}_{{.Arch}}" \
+		-output "dist/go-otp_{{.OS}}_{{.Arch}}" \
 		-os="linux"
 	ghr -u erasche -replace $(VERSION) dist/
