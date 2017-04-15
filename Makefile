@@ -16,7 +16,7 @@ gofmt:
 release:
 	rm -rf dist/
 	mkdir dist
-	CGO_ENABLED=0 gox \
+	gox \
 		-ldflags "-X main.version=$(VERSION) -X main.builddate=`date -u +%Y-%m-%dT%H:%M:%SZ`" \
 		-output "dist/go-otp_{{.OS}}_{{.Arch}}" \
 		-os="linux"
