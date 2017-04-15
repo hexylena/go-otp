@@ -2,29 +2,19 @@ package cmds
 
 import (
 	"database/sql"
-	"errors"
-	"flag"
 	"fmt"
-	"github.com/hgfischer/go-otp"
-	_ "github.com/xeodou/go-sqlcipher"
-	"github.com/maxmclau/gput"
 	"strings"
 	"time"
-)
 
-var GetDoc = `
-Generate a TOTP/HOTP Code for the given
-`
-
-var (
-	getIndex        int
-	getPasswordFlag string
+	"github.com/hgfischer/go-otp"
+	"github.com/maxmclau/gput"
+	_ "github.com/xeodou/go-sqlcipher"
 )
 
 type Account struct {
 	account string
-	issuer string
-	pass string
+	issuer  string
+	pass    string
 }
 
 func genCode(an Account) int {
@@ -37,29 +27,25 @@ func genCode(an Account) int {
 }
 
 func printIt(accounts []Account) {
-	var count int64 = 30 - time.Now().Unix() % 30
+	var count int64 = 30 - time.Now().Unix()%30
 	fmt.Printf(
 		"%s%s\n",
 		strings.Repeat(".", int(count)),
-		strings.Repeat(" ", 30 - int(count)),
+		strings.Repeat(" ", 30-int(count)),
 	)
 	for _, account := range accounts {
 		genCode(account)
 	}
 }
 
-func GetAction() error {
-	if getPasswordFlag == "" {
-		return errors.New("Must provide -password")
-	}
-
-	db, err := sql.Open("sqlite3", "auth.db")
+func GenerateCodes(dbPath, password string) error {
+	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer db.Close()
 
-	p := fmt.Sprintf("PRAGMA key = '%s';", getPasswordFlag)
+	p := fmt.Sprintf("PRAGMA key = '%s';", password)
 	_, err = db.Exec(p)
 	if err != nil {
 		return err
@@ -103,8 +89,4 @@ func GetAction() error {
 	}
 
 	return nil
-}
-
-func GetFlagHandler(fs *flag.FlagSet) {
-	fs.StringVar(&getPasswordFlag, "password", "", "Database Password")
 }

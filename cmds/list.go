@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+
 	_ "github.com/xeodou/go-sqlcipher"
 )
 
@@ -14,6 +15,7 @@ List available accounts
 
 var (
 	listPasswordFlag string
+	dbLoc            string
 )
 
 func ListAction() error {
@@ -21,7 +23,7 @@ func ListAction() error {
 		return errors.New("Must provide -password")
 	}
 
-	db, err := sql.Open("sqlite3", "auth.db")
+	db, err := sql.Open("sqlite3", dbLoc)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -59,4 +61,5 @@ func ListAction() error {
 
 func ListFlagHandler(fs *flag.FlagSet) {
 	fs.StringVar(&listPasswordFlag, "password", "", "Database Password")
+	fs.StringVar(&dbLoc, "db", "", "Database Path")
 }

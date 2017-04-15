@@ -2,37 +2,24 @@ package cmds
 
 import (
 	"bytes"
-	"code.google.com/p/rsc/qr"
 	"database/sql"
-	"errors"
-	"flag"
 	"fmt"
-	_ "github.com/xeodou/go-sqlcipher"
 	"image"
 	"image/png"
 	"os"
+
+	"code.google.com/p/rsc/qr"
+	_ "github.com/xeodou/go-sqlcipher"
 )
 
-var QrDoc = `
-
-`
-
-var (
-	qrPasswordFlag string
-)
-
-func QrAction() error {
-	if qrPasswordFlag == "" {
-		return errors.New("Must provide -password")
-	}
-
-	db, err := sql.Open("sqlite3", "auth.db")
+func QrCodes(dbPath, password string) error {
+	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer db.Close()
 
-	p := fmt.Sprintf("PRAGMA key = '%s';", qrPasswordFlag)
+	p := fmt.Sprintf("PRAGMA key = '%s';", password)
 	_, err = db.Exec(p)
 	if err != nil {
 		return err
@@ -82,8 +69,4 @@ func QrAction() error {
 	rows.Close()
 
 	return nil
-}
-
-func QrFlagHandler(fs *flag.FlagSet) {
-	fs.StringVar(&qrPasswordFlag, "password", "", "Database Password")
 }

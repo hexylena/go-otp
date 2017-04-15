@@ -2,26 +2,13 @@ package cmds
 
 import (
 	"database/sql"
-	"errors"
-	"flag"
 	"fmt"
+
 	_ "github.com/xeodou/go-sqlcipher"
 )
 
-var ExportDoc = `
-Export available services
-`
-
-var (
-	exportPasswordFlag string
-)
-
-func ExportAction() error {
-	if exportPasswordFlag == "" {
-		return errors.New("Must provide -password")
-	}
-
-	db, err := sql.Open("sqlite3", "auth.db")
+func ExportSecrets(dbLoc, exportPasswordFlag string) error {
+	db, err := sql.Open("sqlite3", dbLoc)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -52,8 +39,4 @@ func ExportAction() error {
 	rows.Close()
 
 	return nil
-}
-
-func ExportFlagHandler(fs *flag.FlagSet) {
-	fs.StringVar(&exportPasswordFlag, "password", "", "Database Password")
 }

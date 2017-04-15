@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/erasche/go-otp/cmds"
-	"github.com/robmerrell/comandante"
+	"github.com/urfave/cli"
 	"os"
+	"os/user"
+	"path"
 )
 
 func promptForPasscode() string {
@@ -16,41 +18,95 @@ func promptForPasscode() string {
 }
 
 func main() {
-	bin := comandante.New("auth", "Authenticator app")
-	bin.IncludeHelp()
+	app := cli.NewApp()
+	app.Name = "go-otp"
+	app.Usage = "Simple TOTP tool"
+	user, err := user.Current()
 
-	initCmd := comandante.NewCommand("init", "Initialize storage", cmds.InitAction)
-	initCmd.FlagInit = cmds.InitFlagHandler
-	initCmd.Documentation = cmds.InitDoc
-	bin.RegisterCommand(initCmd)
-
-	listCmd := comandante.NewCommand("list", "List stored services", cmds.ListAction)
-	listCmd.FlagInit = cmds.ListFlagHandler // use the flag package to get a url
-	listCmd.Documentation = cmds.ListDoc
-	bin.RegisterCommand(listCmd)
-
-	addCmd := comandante.NewCommand("add", "Add a new service", cmds.AddAction)
-	addCmd.FlagInit = cmds.AddFlagHandler // use the flag package to add a url
-	addCmd.Documentation = cmds.AddDoc
-	bin.RegisterCommand(addCmd)
-
-	getCmd := comandante.NewCommand("gen", "Generate a TOTP code for a given service", cmds.GetAction)
-	getCmd.FlagInit = cmds.GetFlagHandler // use the flag package to get a url
-	getCmd.Documentation = cmds.GetDoc
-	bin.RegisterCommand(getCmd)
-
-	qrCmd := comandante.NewCommand("qr", "qr PNG QR Code", cmds.QrAction)
-	qrCmd.FlagInit = cmds.QrFlagHandler // use the flag package to qr a url
-	qrCmd.Documentation = cmds.QrDoc
-	bin.RegisterCommand(qrCmd)
-
-	exportCmd := comandante.NewCommand("export", "export database to json", cmds.ExportAction)
-	exportCmd.FlagInit = cmds.ExportFlagHandler
-	exportCmd.Documentation = cmds.ExportDoc
-	bin.RegisterCommand(exportCmd)
-
-	// run the command
-	if err := bin.Run(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+	var defaultDbPath string
+	if err != nil {
+		defaultDbPath = "auth.db"
+	} else {
+		defaultDbPath = path.Join(user.HomeDir, ".go-otp.db")
 	}
+
+	app.Flags = []cli.Flag{
+		cli.StringFlag{Name: "dbPath", Value: defaultDbPath},
+		cli.StringFlag{Name: "password"},
+	}
+
+	app.Commands = []cli.Command{
+		{
+			Name:    "add",
+			Aliases: []string{"a"},
+			Usage:   "add a TOTP secret",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "account", Usage: "Account Name (e.g. user@host)"},
+				cli.StringFlag{Name: "issuer", Usage: "Issuer (e.g. example.com)"},
+				cli.StringFlag{Name: "secretKey", Usage: "TOTP secret key"},
+				cli.BoolFlag{Name: "overwrite"},
+			},
+			Action: func(c *cli.Context) error {
+				cmds.AddCode(
+					c.GlobalString("dbPath"),
+					c.GlobalString("password"),
+					c.GlobalString("account"),
+					c.GlobalString("issuer"),
+					c.GlobalString("secretKey"),
+					c.GlobalBool("overwrite"),
+				)
+				return nil
+			},
+		},
+		{
+			Name:    "export",
+			Aliases: []string{"e"},
+			Usage:   "export all TOTP secrets",
+			Action: func(c *cli.Context) error {
+				cmds.ExportSecrets(
+					c.GlobalString("dbPath"),
+					c.GlobalString("password"),
+				)
+				return nil
+			},
+		},
+		{
+			Name:    "gen",
+			Aliases: []string{"g"},
+			Usage:   "Show current TOTP tokens",
+			Action: func(c *cli.Context) error {
+				cmds.GenerateCodes(
+					c.GlobalString("dbPath"),
+					c.GlobalString("password"),
+				)
+				return nil
+			},
+		},
+		{
+			Name:    "init",
+			Aliases: []string{"i"},
+			Usage:   "Initialize database",
+			Action: func(c *cli.Context) error {
+				cmds.InitDb(
+					c.GlobalString("dbPath"),
+					c.GlobalString("password"),
+				)
+				return nil
+			},
+		},
+		{
+			Name:    "qr",
+			Aliases: []string{"q"},
+			Usage:   "Dump QR codes as PNG files",
+			Action: func(c *cli.Context) error {
+				cmds.QrCodes(
+					c.GlobalString("dbPath"),
+					c.GlobalString("password"),
+				)
+				return nil
+			},
+		},
+	}
+
+	app.Run(os.Args)
 }
