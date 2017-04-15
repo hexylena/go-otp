@@ -1,8 +1,4 @@
-SOURCES := main.go $(WILDCARD cmds/*.go)
 VERSION := $(shell git describe --tags)
-
-go-otp: $(SOURCES)
-	go build -o go-otp .
 
 deps:
 	go get github.com/mitchellh/gox \
